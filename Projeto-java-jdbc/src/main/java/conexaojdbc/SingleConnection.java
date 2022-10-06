@@ -9,9 +9,6 @@ public class SingleConnection {
 	private static String password = "Kleber01@";
 	private static String user = "postgres";
 	private static Connection connection = null;
-
-	
-	
 	
 	static {
 		conectar();
