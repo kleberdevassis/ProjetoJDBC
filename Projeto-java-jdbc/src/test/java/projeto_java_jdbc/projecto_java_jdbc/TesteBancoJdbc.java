@@ -3,10 +3,13 @@ package projeto_java_jdbc.projecto_java_jdbc;
 import java.sql.SQLException;
 import java.util.List;
 
+import javax.swing.text.StyledEditorKit.ForegroundAction;
+
 import org.junit.Test;
 
 import conexaojdbc.SingleConnection;
 import dao.UserPosDao;
+import model.BeanUserFone;
 import model.Telefone;
 import model.userPosJava;
 
@@ -17,8 +20,8 @@ public class TesteBancoJdbc {
 		UserPosDao userPosDao = new UserPosDao();
 		userPosJava userposjava = new userPosJava();
 
-		userposjava.setNome("Paulo");
-		userposjava.setEmail("Paulo@gmail.com");
+		userposjava.setNome("Vanessa");
+		userposjava.setEmail("vanessa@gmail.com");
 
 		userPosDao.salvar(userposjava);
 
@@ -103,5 +106,24 @@ public class TesteBancoJdbc {
 		userPosDao.salvarTelefone(telefone);
 
 	}
+	
+	@Test
+	public void testeCarregaFoneUsers() {
+		UserPosDao dao = new UserPosDao();
+		List<BeanUserFone> beanUserFones = dao.listaUserFone(8L);
+		
+		for(BeanUserFone beanUserFone : beanUserFones) {
+			System.out.println(beanUserFone);
+			System.out.println("----------------------------------------------------------");
+		}
+		
+	}
+	
+    @Test
+    public void testeDeleteUserFone() {
+    	UserPosDao dao = new UserPosDao();
+    	dao.deleteFonesPorUser(3L);
+    	
+    }
 
 }

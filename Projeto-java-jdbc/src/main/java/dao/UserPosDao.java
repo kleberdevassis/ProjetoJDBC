@@ -10,6 +10,7 @@ import java.util.List;
 
 import conexaojdbc.SingleConnection;
 import model.Telefone;
+import model.BeanUserFone;
 import model.userPosJava;
 
 public class UserPosDao {
@@ -40,9 +41,9 @@ public class UserPosDao {
 		}
 
 	}
-	
+
 	public void salvarTelefone(Telefone telefone) {
-		
+
 		try {
 			String sql = "insert into telefoneuser (numero,tipo,usuariopessoa) values(?,?,?)";
 			PreparedStatement insert = connection.prepareStatement(sql);
@@ -60,10 +61,71 @@ public class UserPosDao {
 				e1.printStackTrace();
 			}
 		}
+
+	}
+	
+	
+	public void deleteFonesPorUser(Long idUser) {
 		
+		
+		String sqlFone = "delete from telefoneuser where usuariopessoa = "+idUser;
+		String sqlUser = "delete from userposjava where id = "+ idUser;
+		
+		try {
+			PreparedStatement statement = connection.prepareStatement(sqlFone);
+			statement.executeUpdate();
+			connection.commit();
+			
+		    statement = connection.prepareStatement(sqlUser);
+		    statement.executeUpdate();
+		    connection.commit();
+			
+		} catch (SQLException e) {
+			
+			e.printStackTrace();
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+				e1.printStackTrace();
+			}
+		}
 		
 		
 	}
+	
+    public List<BeanUserFone> listaUserFone(Long idUser){
+    	
+    	List<BeanUserFone> beanUserFones = new ArrayList<>();
+    	
+    	String sql = "select nome, numero, email from telefoneuser as fone ";
+    	sql+= " inner join userposjava as userp ";
+    	sql+= " on fone.usuariopessoa = userp.id ";
+    	sql+= "where userp.id = " + idUser;
+    	
+    	try {
+			PreparedStatement Statement = connection.prepareStatement(sql);
+			ResultSet resultado = Statement.executeQuery();
+			
+			while(resultado.next()) {
+				BeanUserFone beanUserFone = new BeanUserFone();
+				beanUserFone.setEmail(resultado.getString("email"));
+				beanUserFone.setNome(resultado.getString("nome"));
+				beanUserFone.setNumero(resultado.getString("numero"));
+				beanUserFones.add(beanUserFone);
+				
+			}
+				
+		} catch (SQLException e) {
+			 
+			e.printStackTrace();
+		}
+    	
+    	
+    	return  beanUserFones;
+    }
+	
+	
 
 	public List<userPosJava> listar() throws Exception {
 
@@ -128,27 +190,26 @@ public class UserPosDao {
 		}
 
 	}
-	
+
 	public void delete(Long id) {
-		
+
 		try {
-			
-			String sql = "delete from userposjava where id ="+id;
+
+			String sql = "delete from userposjava where id =" + id;
 			PreparedStatement preparestatement = connection.prepareStatement(sql);
 			preparestatement.execute();
 			connection.commit();
 		} catch (Exception e) {
-		try {
-			connection.rollback();
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+			e.printStackTrace();
 		}
-		
-		e.printStackTrace();
-		}
-		
-		
+
 	}
 
 }
